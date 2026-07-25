@@ -4,9 +4,13 @@ import jakarta.validation.Valid;
 import org.example.demoapp.DTO.BookDTO;
 import org.example.demoapp.Entity.Book;
 import org.example.demoapp.Service.BookService;
+import org.example.demoapp.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,28 +21,47 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public List<BookDTO> getBooks() {
-        return bookService.getAllBooks();
+    public ResponseEntity<StandardResponse> getAllBooks() {
+        List<BookDTO> bookDTOList  = bookService.getAllBooks();
+       return new ResponseEntity<>(
+               new StandardResponse(200,"Succefully Fetched All Books",bookDTOList),
+               HttpStatus.OK
+       );
     }
 
     @PostMapping
-    public BookDTO createBook(@Valid @RequestBody BookDTO bookDTO) {
-        return bookService.createBook(bookDTO);
+   public ResponseEntity<StandardResponse> createBook(@Valid @RequestBody BookDTO bookDTO) {
+        BookDTO newBook =  bookService.createBook(bookDTO);
+        return new ResponseEntity<>(
+                new StandardResponse(201,"Book saved Successfully",newBook),
+                HttpStatus.CREATED
+        );
     }
-
-    @PostMapping
-    public BookDTO updateBook(@RequestBody BookDTO bookDTO) {
-        return bookService.updateBook(bookDTO);
+    @PutMapping
+    public ResponseEntity<StandardResponse> updateBook(@Valid @RequestBody BookDTO bookDTO) {
+        BookDTO updatedBook =  bookService.updateBook(bookDTO);
+        return new ResponseEntity<>(
+                new StandardResponse(200,"Book Updated Successfully",updatedBook),
+                HttpStatus.OK
+        );
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable int id) {
-         return bookService.deleteBook(id);
+    public ResponseEntity<StandardResponse> deleteBook(@PathVariable Integer id) {
+        String message = bookService.deleteBook(id);
+        return new  ResponseEntity<>(
+                new StandardResponse(200, "Book Deleted Successfully !",message)
+                , HttpStatus.OK
+        );
     }
 
     @GetMapping("/{id}")
-    public  BookDTO getBookById(int id) {
-        return bookService.getBookById(id);
+    public  ResponseEntity<StandardResponse> getBookById(@PathVariable int id) {
+        BookDTO book = bookService.getBookById(id);
+        return new ResponseEntity<>(
+                new StandardResponse(200,"Book Details Successfully !",book),
+                HttpStatus.OK
+        );
     }
 }
 

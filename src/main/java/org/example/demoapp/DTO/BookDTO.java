@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 public class BookDTO {
 
-    private Integer id;
+    private int id;
 
     @NotBlank(message = "Tittle is Required !")
     private String title;
